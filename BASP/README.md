@@ -73,8 +73,8 @@ npm run dev
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | admin@basp.test | Admin12345 |
-| Institution | college@basp.test | College12345 |
+| Admin | admin@gmail.com | Admin@1234 |
+| Institutions | jjmcoe@basp.test, dkte@basp.test, rit@basp.test, adcet@basp.test, sit@basp.test, tkit@basp.test | 12345678 |
 | Student | student@basp.test | Student12345 |
 
 The seed script also creates one approved sample certificate and prints its public link.

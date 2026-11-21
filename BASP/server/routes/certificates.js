@@ -7,10 +7,17 @@ import { protect, authorize } from '../middleware/auth.js'
 import { Certificate, User, LedgerEntry, ActivityLog } from '../models/index.js'
 import { sha256File, makeCertCode } from '../utils/hash.js'
 import { logActivity } from '../utils/log.js'
+import { institutionNames } from '../config/institutions.js'
 
 const router = express.Router()
 
-const verifyUrl = (code) => `${process.env.CLIENT_URL}/verify/${code}`
+const firstClientUrl = () =>
+  (process.env.CLIENT_URL || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)[0] || 'http://localhost:5173'
+
+const verifyUrl = (code) => `${firstClientUrl()}/verify/${code}`
 
 // Only send safe fields, never the stored file name
 const safeCert = (c) => ({
@@ -54,7 +61,12 @@ const fullInclude = [
 // GET /api/certificates/institutions  (approved colleges a student can choose)
 router.get('/institutions', protect, async (req, res) => {
   const list = await User.findAll({
-    where: { role: 'institution', isActive: true, isApproved: true },
+    where: {
+      role: 'institution',
+      isActive: true,
+      isApproved: true,
+      institutionName: institutionNames,
+    },
     attributes: ['id', 'institutionName'],
     order: [['institutionName', 'ASC']],
   })

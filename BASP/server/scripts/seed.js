@@ -10,23 +10,24 @@ import { User, Certificate } from '../models/index.js'
 import { uploadDir } from '../middleware/upload.js'
 import { sha256File, makeCertCode } from '../utils/hash.js'
 import { appendToLedger } from '../utils/ledger.js'
+import { institutions } from '../config/institutions.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const accounts = [
   {
     name: process.env.ADMIN_NAME || 'BASP Admin',
-    email: (process.env.ADMIN_EMAIL || 'admin@basp.test').toLowerCase(),
-    password: process.env.ADMIN_PASSWORD || 'Admin12345',
+    email: (process.env.ADMIN_EMAIL || 'admin@gmail.com').toLowerCase(),
+    password: process.env.ADMIN_PASSWORD || 'Admin@1234',
     role: 'admin',
   },
-  {
-    name: 'Demo Registrar',
-    email: 'college@basp.test',
-    password: 'College12345',
+  ...institutions.map((institution, index) => ({
+    name: `${institution.name} Registrar`,
+    email: institution.email,
+    password: '12345678',
     role: 'institution',
-    institutionName: 'Demo Engineering College',
-  },
+    institutionName: institution.name,
+  })),
   {
     name: 'Demo Student',
     email: 'student@basp.test',
@@ -39,6 +40,19 @@ const run = async () => {
   try {
     await connectDB()
     await sequelize.sync()
+
+    const admin = await User.findOne({ where: { role: 'admin' } })
+    if (admin) {
+      await admin.update({
+        name: process.env.ADMIN_NAME || 'BASP Admin',
+        email: (process.env.ADMIN_EMAIL || 'admin@gmail.com').toLowerCase(),
+        password: await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@1234', 10),
+        role: 'admin',
+        isApproved: true,
+        isActive: true,
+      })
+      console.log('Updated admin credentials')
+    }
 
     for (const a of accounts) {
       const exists = await User.findOne({ where: { email: a.email } })
@@ -56,6 +70,17 @@ const run = async () => {
       })
       console.log('Created', a.role + ':', a.email)
     }
+
+    const institutionPassword = await bcrypt.hash('12345678', 10)
+    const institutionAccounts = await User.findAll({ where: { role: 'institution' } })
+    for (const institution of institutionAccounts) {
+      await institution.update({
+        password: institutionPassword,
+        isApproved: true,
+        isActive: true,
+      })
+    }
+    console.log(`Updated password for ${institutionAccounts.length} institution accounts`)
 
     // One approved sample certificate, so the demo works at once
     const sample = path.join(__dirname, '..', '..', 'samples', 'sample-certificate.pdf')

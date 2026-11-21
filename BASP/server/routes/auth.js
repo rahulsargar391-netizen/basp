@@ -5,6 +5,7 @@ import { User } from '../models/index.js'
 import { protect } from '../middleware/auth.js'
 import { rateLimit } from '../utils/rateLimit.js'
 import { logActivity } from '../utils/log.js'
+import { institutionNames } from '../config/institutions.js'
 
 const router = express.Router()
 
@@ -32,7 +33,10 @@ const registerLimiter = rateLimit({ windowMs: 60 * 1000, max: 10 })
 const registerUser = async (req, res, role) => {
   const { name, email, password, institutionName } = req.body || {}
 
-  if (!name || !email || !password) {
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' })
+  }
+  if (role === 'student' && !name) {
     return res.status(400).json({ message: 'Name, email and password are required' })
   }
   if (!emailPattern.test(email)) {
@@ -44,6 +48,9 @@ const registerUser = async (req, res, role) => {
   if (role === 'institution' && !institutionName) {
     return res.status(400).json({ message: 'Institution name is required' })
   }
+  if (role === 'institution' && !institutionNames.includes(institutionName.trim())) {
+    return res.status(400).json({ message: 'Please choose a supported institution' })
+  }
 
   const cleanEmail = email.trim().toLowerCase()
   const exists = await User.findOne({ where: { email: cleanEmail } })
@@ -52,7 +59,7 @@ const registerUser = async (req, res, role) => {
   }
 
   const user = await User.create({
-    name: name.trim(),
+    name: role === 'institution' ? institutionName.trim() : name.trim(),
     email: cleanEmail,
     password: await bcrypt.hash(password, 10),
     role,

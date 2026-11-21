@@ -5,10 +5,19 @@ import { errorText } from '../api'
 import AuthCard from '../components/AuthCard'
 import { inputClass, primaryButton, ErrorBox } from '../components/ui'
 
+const institutions = [
+  'Dr. J. J. Magdum College of Engineering (JJMCOE)',
+  "DKTE - D.K.T.E. Society's Textile & Engineering Institute",
+  'RIT - Rajarambapu Institute of Technology',
+  'ADCET - Annasaheb Dange College of Engineering and Technology',
+  'SIT - Sharad Institute of Technology College of Engineering',
+  'TKIT - Tatyasaheb Kore Institute of Engineering and Technology',
+]
+
 function RegisterInstitution() {
   const { registerInstitution } = useAuth()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ institutionName: '', name: '', email: '', password: '', confirm: '' })
+  const [form, setForm] = useState({ institutionName: '', email: '', password: '', confirm: '' })
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -16,7 +25,7 @@ function RegisterInstitution() {
 
   const handleSubmit = async () => {
     setError('')
-    if (!form.institutionName || !form.name || !form.email || !form.password) {
+    if (!form.institutionName || !form.email || !form.password) {
       return setError('Please fill in all fields')
     }
     if (form.password.length < 8) return setError('Password must be at least 8 characters')
@@ -26,7 +35,6 @@ function RegisterInstitution() {
     try {
       await registerInstitution({
         institutionName: form.institutionName,
-        name: form.name,
         email: form.email,
         password: form.password,
       })
@@ -41,8 +49,12 @@ function RegisterInstitution() {
   return (
     <AuthCard title="Register your institution" subtitle="An admin approves new institutions before they can issue">
       <div className="space-y-4">
-        <input name="institutionName" placeholder="Institution name" value={form.institutionName} onChange={change} className={inputClass} />
-        <input name="name" placeholder="Your full name" value={form.name} onChange={change} className={inputClass} />
+        <select name="institutionName" value={form.institutionName} onChange={change} className={inputClass}>
+          <option value="">Choose college name</option>
+          {institutions.map((institution) => (
+            <option key={institution} value={institution}>{institution}</option>
+          ))}
+        </select>
         <input name="email" type="email" placeholder="Official email" value={form.email} onChange={change} className={inputClass} />
         <input name="password" type="password" placeholder="Password (min 8 characters)" value={form.password} onChange={change} className={inputClass} />
         <input name="confirm" type="password" placeholder="Confirm password" value={form.confirm} onChange={change} className={inputClass} />

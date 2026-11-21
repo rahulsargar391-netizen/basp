@@ -9,13 +9,19 @@ const {
   DB_USER = 'root',
   DB_PASSWORD = '',
   DB_CREATE_DATABASE = 'true',
+  DB_SSL = 'false',
 } = process.env
+
+const dialectOptions = DB_SSL === 'true'
+  ? { ssl: { rejectUnauthorized: true } }
+  : undefined
 
 export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   port: Number(DB_PORT),
   dialect: 'mysql',
   logging: false,
+  dialectOptions,
 })
 
 // Creates the database if needed, then checks the connection

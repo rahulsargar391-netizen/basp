@@ -78,7 +78,7 @@ function UploadCertificate() {
         <input name="title" placeholder="Certificate title (for example: Python Course)" value={form.title} onChange={change} className={inputClass} />
 
         <select name="institutionId" value={form.institutionId} onChange={change} className={inputClass}>
-          <option value="">Choose the issuing institution</option>
+          <option value="">Choose college name</option>
           {institutions.map((i) => (
             <option key={i.id} value={i.id}>{i.name}</option>
           ))}
