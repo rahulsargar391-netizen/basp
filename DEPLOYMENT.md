@@ -21,6 +21,7 @@ and Vercel settings in `BASP/vercel.json`.
 1. Import `rahulsargar391-netizen/basp` at https://vercel.com/new.
 2. Set **Root Directory** to `BASP`.
 3. Keep the build and output settings from `BASP/vercel.json`:
+   - Install command: `npm ci --prefix client`
    - Build command: `npm run build --prefix client`
    - Output directory: `client/dist`
 4. Deploy once to obtain the production domain, for example
