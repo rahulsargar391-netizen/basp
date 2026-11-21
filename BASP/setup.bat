@@ -31,7 +31,8 @@ if not exist ".env" copy ".env.example" ".env" >nul
 
 echo.
 echo Setup finished.
-echo Next: start MySQL in the XAMPP Control Panel, then run  seed-demo.bat  once, then  start.bat
+echo Configure Supabase settings in server\.env before starting BASP.
+echo No MySQL or demo seed is required. Then run start.bat.
 pause
 exit /b 0
 

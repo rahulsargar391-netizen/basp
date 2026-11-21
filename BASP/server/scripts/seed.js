@@ -14,12 +14,13 @@ import { institutions } from '../config/institutions.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const accountsOnly = process.argv.includes('--accounts-only')
+const adminPassword = process.env.ADMIN_PASSWORD
 
 const accounts = [
   {
     name: process.env.ADMIN_NAME || 'BASP Admin',
     email: (process.env.ADMIN_EMAIL || 'admin@gmail.com').toLowerCase(),
-    password: process.env.ADMIN_PASSWORD || 'Admin@1234',
+    password: adminPassword,
     role: 'admin',
   },
   ...institutions.map((institution) => ({
@@ -39,6 +40,10 @@ const accounts = [
 
 const run = async () => {
   try {
+    if (!adminPassword || adminPassword.length < 12 || adminPassword === 'CHANGE_ME') {
+      throw new Error('Set ADMIN_PASSWORD to at least 12 characters before seeding')
+    }
+
     await connectDB()
     await sequelize.sync()
 
@@ -71,7 +76,7 @@ const run = async () => {
         await admin.update({
           name: process.env.ADMIN_NAME || 'BASP Admin',
           email: (process.env.ADMIN_EMAIL || 'admin@gmail.com').toLowerCase(),
-          password: await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@1234', 10),
+          password: await bcrypt.hash(adminPassword, 10),
           role: 'admin',
           isApproved: true,
           isActive: true,

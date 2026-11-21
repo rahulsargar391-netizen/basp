@@ -3,22 +3,18 @@ services:
     name: basp-api
     runtime: node
     rootDir: BASP/server
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: 24
+      - key: NODE_ENV
+        value: production
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 7d
-      - key: ADMIN_NAME
-        value: BASP Admin
-      - key: ADMIN_EMAIL
-        value: admin@gmail.com
-      - key: ADMIN_PASSWORD
-        sync: false
       - key: CLIENT_URL
         sync: false
       - key: DB_DIALECT
@@ -29,5 +25,5 @@ services:
         value: "false"
       - key: DB_SSL
         value: "true"
-      - key: UPLOAD_DIR
-        value: /var/data/uploads
+      - key: DB_SSL_CA_FILE
+        sync: false

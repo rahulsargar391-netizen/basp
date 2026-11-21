@@ -80,6 +80,6 @@ connectDB()
   })
   .catch((error) => {
     console.error('Could not start the server:', error.message)
-    console.error('Check that MySQL is green in the XAMPP Control Panel.')
+    console.error('Check DB_DIALECT and the configured database connection string.')
     process.exit(1)
   })

@@ -1,4 +1,8 @@
-node_modules
+node_modules/
 .env
-uploads
-dist
+.env.*
+!.env.example
+uploads/
+dist/
+.vercel/
+*.log
