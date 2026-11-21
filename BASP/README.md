@@ -174,15 +174,9 @@ BASP/
 - **Phase 10:** store files on IPFS using a free Pinata account (the API key stays in `server/.env`).
 - **Phase 12:** testing checklist and free deployment.
 
-## 10. Cloud deployment (Vercel + Railway)
+## 10. Cloud deployment
 
-The client can be hosted on Vercel, with the API, MySQL database, and persistent upload storage on Railway.
-
-1. In Railway, create a project with a MySQL service and a Node service using `BASP/server` as its root directory. The server starts with `npm start`.
-2. Set the Node service's database variables to reference the MySQL service's `MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`, `MYSQLUSER`, and `MYSQLPASSWORD` values. Set `DB_CREATE_DATABASE=false` because the managed database already exists.
-3. Generate a new `JWT_SECRET` in Railway. Set `CLIENT_URL` to the final Vercel site origin. Do not reuse or publish a local `.env` secret.
-4. Attach a Railway volume to the Node service at `/app/uploads` and set `UPLOAD_DIR=/app/uploads`. Without persistent storage, uploaded certificates can disappear when the service is redeployed.
-5. In Vercel, set the project root to `BASP` and set `VITE_API_URL` to the Railway API's public URL followed by `/api`. Deploy the client, then set the exact Vercel origin as the Railway `CLIENT_URL`.
-6. Confirm the API responds at `<Railway API URL>/api/health`, then test registration, login, certificate upload, and public verification on the Vercel HTTPS URL.
-
-Enter deployment secrets directly in the hosting provider's environment settings. Never commit them to Git or put them in the client environment.
+For Vercel, the API host, Supabase PostgreSQL, and persistent upload storage setup, see
+[DEPLOYMENT.md](./DEPLOYMENT.md). Existing MySQL data and uploaded files are not copied
+automatically; keep the local database and files until any authorized transfer is
+completed and verified.

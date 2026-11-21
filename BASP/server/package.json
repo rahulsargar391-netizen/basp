@@ -8,6 +8,7 @@
     "dev": "node --watch index.js",
     "start": "node index.js",
     "seed": "node scripts/seed.js",
+    "seed:accounts": "node scripts/seed.js --accounts-only",
     "setup-env": "node scripts/setup-env.js"
   },
   "dependencies": {
@@ -18,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.1",
     "mysql2": "^3.14.0",
+    "pg": "^8.23.1",
     "qrcode": "^1.5.4",
     "sequelize": "^6.37.7"
   }
